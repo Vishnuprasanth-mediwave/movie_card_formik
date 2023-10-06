@@ -1,88 +1,63 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./Components/input";
 import Button from "./Components/button";
 import Card from "./Components/card";
+import { v4 as uuidv4 } from "uuid";
+import "./App.css";
 
 function App() {
-  const [formData, setFormData] = useState([{
-    title: "",
-    description: "",
-    ratings: "",
-    url: "",
-  }]);
-  const [cardData, setCardData] = useState([]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [titles, setTitles] = useState([]);
+  const [title, setTitle] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setCardData([...cardData, formData]);
-    setFormData({
-      title: "",
-      description: "",
-      ratings: "",
-      url: "",
+    setTitles(() => {
+      const data = { id: uuidv4(), title: title };
+      return [...titles, data];
     });
+
+    setTitle("");
   };
+
+  function UpdateCard() {}
+
+  function deleteCard(id) {
+    const filterArray = titles.filter((check) => check.id !== id);
+    setTitles(filterArray);
+  }
+
+  useEffect(() => {
+    console.log(titles);
+  }, [titles]);
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="title">Title</label>
           <Input
+            label="Title"
             type="text"
-            id="title"
+            id="1"
             name="title"
             placeholder="Title"
-            value={formData.title}
-            onChange={handleChange}
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
           />
+          <Button type="submit" name="Add" />
         </div>
-        <div>
-          <label htmlFor="description">Description</label>
-          <Input
-            type="text"
-            id="description"
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="ratings">Ratings</label>
-          <Input
-            type="number"
-            id="ratings"
-            name="ratings"
-            placeholder="Ratings"
-            value={formData.ratings}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="url">URL</label>
-          <Input
-            type="url"
-            id="url"
-            name="url"
-            placeholder="URL"
-            value={formData.url}
-            onChange={handleChange}
-          />
-        </div>
-        <Button type="submit" name="Submit" />
       </form>
-      <div className="card">
-        {cardData &&
-          cardData.map((item, index) => {
-            return <Card key={index} values={item} />;
-          })}
-      </div>
+
+      {titles.map((item) => {
+        return (
+          <div>
+            <Card
+              values={item}
+              deleteCard={() => deleteCard(item.id)}
+              UpdateCard={() => UpdateCard(item.id)}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

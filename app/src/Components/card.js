@@ -1,12 +1,11 @@
-import React from 'react';
+import React from "react";
 
-const Card = ({ values }) => {
+const Card = ({ values, deleteCard, UpdateCard }) => {
   return (
     <div className="card">
-      <h2>{values.title}</h2>
-      <p>{values.description}</p>
-      <p>Ratings: {values.ratings}</p>
-      <img src={values.url} alt="Image" />
+      <h2 id={values.id}> {values.title}</h2>
+      <button onClick={deleteCard}>delete</button>
+      <button onClick={UpdateCard}>Update</button>
     </div>
   );
 };
